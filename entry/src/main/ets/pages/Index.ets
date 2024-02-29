@@ -1,4 +1,5 @@
-import {Navbar} from './components/NavBar'
+import { Navbar } from './components/NavBar';
+import router from '@ohos.router';
 
 @Entry
 @Component
@@ -7,10 +8,16 @@ struct Index {
 
   build() {
     Row() {
-      Column() {
+      Column({ space: 10 }) {
         Text(this.message)
           .fontSize(30)
           .fontWeight(FontWeight.Bold)
+        Button('jump to login page')
+          .onClick(() => {
+            router.pushUrl({
+              url: 'pages/login'
+            }, router.RouterMode.Single)
+          })
       }
       .width('100%')
     }

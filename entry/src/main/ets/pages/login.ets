@@ -1,4 +1,5 @@
 import { HeadTextInput } from './components/HeadTextInput'
+import router from '@ohos.router';
 
 @Entry
 @Component
@@ -38,6 +39,11 @@ struct Login {
             Text('点击注册')
               .fontColor('blue')
               .fontSize(14)
+              .onClick((event: ClickEvent) => {
+                router.pushUrl({
+                  url: 'pages/register'
+                }, router.RouterMode.Single)
+              })
           }
 
           Text('忘记密码')
