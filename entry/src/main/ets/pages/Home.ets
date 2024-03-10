@@ -140,8 +140,8 @@ struct HomePage {
         Column() {
           Row(){
             Text('今日血压').width(80).height(24).margin({ top: 13, left: 13 })
-
-          }
+            Image($r("app.media.iconpark_neural")).width(24).height(24)
+          }.justifyContent(FlexAlign.Start)
 
           Text('收缩压: 120mmHo')
           Text('舒张压: 76mmHg')
