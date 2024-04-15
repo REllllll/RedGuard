@@ -1,3 +1,27 @@
+import { NormalButton } from './components/Buttons'
+import { Card } from './components/Cards'
+
+@Extend(Text) function smallTitle() {
+  .fontSize(16)
+  .fontWeight(600)
+  .alignSelf(ItemAlign.Start)
+}
+
+@Extend(Text) function normalText() {
+  .fontSize(14)
+  .fontWeight(400)
+}
+
+@Extend(Text) function normalBoldText() {
+  .fontSize(14)
+  .fontWeight(600)
+}
+
+@Extend(Image) function smallIcon() {
+  .height(16)
+  .width(16)
+}
+
 //滑块试图容器数据源类
 class MyDataSource implements IDataSource {
   private list: number[] = []
@@ -23,6 +47,7 @@ class MyDataSource implements IDataSource {
   }
 }
 
+@Preview
 @Component
 struct HomePage {
   // 搜索栏内容变量
@@ -45,14 +70,30 @@ struct HomePage {
     this.data = new MyDataSource(list)
   }
 
+  titles: string[] = ['血压', '心率', '体重', '血糖', '冥想']
+  pics: Resource[] = [$r('app.media.heartbeat'), $r('app.media.stethoscope'), $r('app.media.balanceOne'), $r('app.media.medicalFiles'), $r('app.media.streetView')]
+  bloodPressure_info = {
+    '收缩压': '120 mmHg',
+    '舒张压': '76 mmHg',
+    '状态': '正常',
+    '本周平均': '118/78 mmHg'
+  }
+  heartbeat_info = {
+    '心率': '78 bpm',
+    '状态': '正常',
+    '本周平均': '78 bpm'
+  }
+  yCardHeight: number = 160
+  xCardHeight: number = 70
+
   build() {
     // 整个页面为从上到下的多行，故采用列组件
-    Column() {
+    Column({space: 10}) {
 
       // 搜索栏
       Search({ value: this.inputValue, placeholder: '在此进行搜索...', controller: this.controller })
         .searchButton('搜索')
-        .width('88%')
+        .width('100%')
         .height(40)
         .backgroundColor('#F5F5F5')
         .placeholderColor(Color.Grey)
@@ -62,13 +103,12 @@ struct HomePage {
         .onSubmit((value: string) => {
           this.getValue = value
         })
-        .margin(20)
 
       // 轮播图
       Swiper(this.swiperController) {
         LazyForEach(this.data, (item: string) => {
           Text(item)
-            .width('90%')
+            .width('100%')
             .height(160)
             .backgroundColor(0xAFEEEE)
             .textAlign(TextAlign.Center)
@@ -89,104 +129,137 @@ struct HomePage {
       })
 
       // 分栏
-      Row() {
-        Button('记录血压')
-          .onClick(() => {
-            // 记录血压功能
-          })
-          .width('18%')
-          .height('8%')
-          .margin(2)
-
-        Button('记录心率')
-          .onClick(() => {
-            // 记录心率功能
-          })
-          .width('18%')
-          .height('8%')
-          .margin(2)
-
-        Button('记录体重')
-          .onClick(() => {
-            // 记录体重功能
-          })
-          .width('18%')
-          .height('8%')
-          .margin(2)
-
-        Button('记录血糖')
-          .onClick(() => {
-            // 记录血糖功能
-          })
-          .width('18%')
-          .height('8%')
-          .margin(2)
-
-        Button('冥想')
-          .onClick(() => {
-            // 进入冥想页面
-          })
-          .width('18%')
-          .height('8%')
-          .margin(2)
-
-      }.margin(10)
+      Flex() {
+        ForEach(this.titles, (title: string, index: number) => {
+          Stack() {
+            NormalButton({ title: title, pic: this.pics[index] })
+          }.flexGrow(1)
+        }, (title: string) => title)
+      }
 
       // 数据展示1
-      Row() {
-        // 左1
-        Column() {
-          Text('今日血压')
-          Text('收缩压: 120mmHo')
-          Text('舒张压: 76mmHg')
-          Text('状态:正常')
-          Text('本周平均:')
-          Text('118/78 mmHg')
-        }.margin(10)
+      Flex() {
+        Card({ color: "#4095E5" , flexRatio: 1, cardHeight: this.yCardHeight}) {
+          Column({ space: 7 }) {
+            Row({space: 10}){
+              Text('今日血压')
+                .smallTitle()
+                .fontColor(Color.White)
+              Image($r('app.media.neural'))
+                .smallIcon()
+            }.alignSelf(ItemAlign.Start)
 
-        // 右1
-        Column() {
-          Text('今日心率')
-          Text('每分钟跳动次数:')
-          Text('74次')
-          Text('状态:正常')
-          Text('本周平均:')
-          Text('69次')
-        }.margin(10)
+            ForEach(Object.keys(this.bloodPressure_info), (key: string, index: number) => {
+              // 如果key为收缩压或舒张压
+              if (key === '收缩压' || key === '舒张压') {
+                Text(key + ': ' + this.bloodPressure_info[key])
+                  .fontColor("#333333")
+                  .normalBoldText()
+              }
+              // 如果key为状态
+              if (key === '状态') {
+                // 如果状态为正常
+                if (this.bloodPressure_info[key] === '正常') {
+                  Text(key + ': ' + this.bloodPressure_info[key])
+                    .fontColor("#ff64ff79")
+                    .normalBoldText()
+                } else {
+                  Text(key + ': ' + this.bloodPressure_info[key])
+                    .fontColor("#FF0000")
+                    .normalBoldText()
+                }
+              }
 
-      }.margin(10)
+            }, (key: string) => key)
+            Text('本周平均:')
+              .fontColor(Color.White)
+              .smallTitle()
+            Text('118/78 mmHg')
+              .fontColor("#333333")
+              .normalBoldText()
+          }.flexGrow(1).alignSelf(ItemAlign.Center)
+        }
+
+        Card({ color: "#377f7f" , flexRatio: 1, cardHeight: this.yCardHeight}) {
+          Column({ space: 7 }) {
+            Row({space: 10}){
+              Text('心率')
+                .smallTitle()
+                .fontColor(Color.White)
+              Image($r('app.media.love'))
+                .smallIcon()
+            }.alignSelf(ItemAlign.Start)
+
+            Text('每分钟跳动次数：')
+              .fontColor("#333333")
+              .normalBoldText()
+            Text('78 bpm')
+              .fontColor("#333333")
+              .normalBoldText()
+            Text('状态:正常')
+              .fontColor("#ff64ff79")
+              .normalBoldText()
+            Text('本周平均:')
+              .fontColor(Color.White)
+              .smallTitle()
+            Text('78 bpm')
+              .fontColor("#333333")
+              .normalBoldText()
+          }.flexGrow(1).alignSelf(ItemAlign.Center)
+        }
+
+      }
 
       // 数据展示2
       Column() {
-        // 下1
-        Row() {
-          Column() {
-            Text('BMI指数')
-            Text('19.1')
-          }.margin(25)
+        Card({ color: "#54BCBD", cardHeight: this.xCardHeight}) {
+          Flex() {
+            Column() {
+              Text('BMI指数')
+                .smallTitle()
+                .fontColor(Color.White)
+              Text('19.1')
+                .normalBoldText()
+                .fontColor('#333333')
+            }.flexGrow(1)
 
-          Column() {
-            Text('今日体重')
-            Text('62.7kg')
-          }.margin(25)
-        }.margin(10)
+            Column() {
+              Text('今日体重')
+                .smallTitle()
+                .fontColor(Color.White)
+              Text('62.7kg')
+                .normalBoldText()
+                .fontColor('#333333')
+            }.flexGrow(1)
+          }
+        }
 
         // 下2
-        Row() {
-          Column() {
-            Text('今日血糖')
-            Text('空腹: 6.26mmol/L')
-          }.margin(25)
+        Card({ color: "#F9A825", cardHeight: this.xCardHeight}) {
+          Flex() {
+            Column() {
+              Text('今日血糖')
+                .smallTitle()
+                .fontColor(Color.White)
+              Text('空腹: 6.26mmol/L')
+                .normalBoldText()
+                .fontColor('#333333')
+            }.flexGrow(1)
 
-          Column() {
-            Text('状态:偏高')
-            Text('餐后: 7.2mmol/L')
-          }.margin(25)
-        }.margin(10)
+            Column() {
+              Text('状态:偏高')
+                .smallTitle()
+                .fontColor(Color.White)
+              Text('餐后: 7.2mmol/L')
+                .normalBoldText()
+                .fontColor('#333333')
+            }.flexGrow(1)
+          }
+        }
 
       }
-    }
+    }.padding({left:20, right:20}).height('100%')
   }
 }
 
-export {HomePage}
+export { HomePage }

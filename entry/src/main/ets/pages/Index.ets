@@ -1,5 +1,6 @@
 import {HomePage} from './Home'
 import {Found} from './Found'
+import {Me} from './Me'
 
 @Entry
 @Component
@@ -32,7 +33,7 @@ struct SearchExample {
       .tabBar('消息')
 
       TabContent() {
-        Text('我的内容').fontSize(30)
+        Me()
       }
       .tabBar("我的")
     }

@@ -2,6 +2,7 @@
   "src": [
     "pages/Index",
     "pages/login",
-    "pages/register"
+    "pages/register",
+    "pages/PostDetail"
   ]
 }

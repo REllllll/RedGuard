@@ -1,3 +1,7 @@
+import { PostCard } from './components/Cards'
+import { User } from '../models/auth'
+
+
 @Component
 struct Found {
   build() {
@@ -5,7 +9,14 @@ struct Found {
     Tabs({ barPosition: BarPosition.Start }) {
       // TabContent的内容:关注、视频、游戏、数码、科技、体育、影视
       TabContent() {
-        Text('广场').fontSize(30)
+        Scroll() {
+          // 创建七个PostCard
+          Column(){
+            ForEach([1, 2, 3, 4, 5, 6, 7], (i) => {
+              PostCard()
+            })
+          }
+        }
       }.tabBar('广场')
 
       TabContent() {
@@ -15,4 +26,4 @@ struct Found {
   }
 }
 
-export {Found}
+export { Found }
