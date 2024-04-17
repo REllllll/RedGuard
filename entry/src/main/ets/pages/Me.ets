@@ -1,84 +1,83 @@
-import {NormalEntry} from './components/NormalEntry'
+import { PostCard } from './components/Cards'
+import { NormalEntry } from './components/NormalEntry'
+import { BigUserInfo } from './components/User'
+import { smallCapsule } from './components/utilites'
+import { UI_Config } from './config'
+
+
 
 @Preview
 @Component
 struct Me {
-  build() {
-    Column({space:10}) {
-      Row() {
-        GridRow() {
-          GridCol({ span: 3 }) {
-            Stack() {
-              Shape() {
-                Circle({ width: 57, height: 57 })
-                  .fill('white')
-              }
+  @State currentIndex: number = 0
+  private fontColor: string = '#666'
+  private selectedFontColor: string = '#333'
+  private tab_controller = new TabsController()
 
-              Shape() {
-                Circle({ width: 54, height: 54 })
-                  .fill('#ffa0a0a0')
-              }
-
-              Image($r('app.media.avatar'))
-                .width(54)
-                .height(54)
-                .clip(new Circle({ width: 54, height: 54 }))
-            }.height('100%').align(Alignment.Center)
-          }
-
-
-          GridCol({ span: 7 }) {
-            Stack() {
-              Column({ space: 5 }) {
-                Text('Sytles')
-                  .fontSize(20)
-                  .fontColor('white')
-                  .fontWeight('bold')
-                Row({ space: 10 }) {
-                  Text('年龄: 19')
-                    .fontSize(16)
-                    .fontColor('white')
-                    .fontWeight('bold')
-                  Image($r('app.media.sex_icon'))
-                    .width(16)
-                    .height(16)
-                }
-
-                Button('资料管理')
-                  .fontSize(14)
-                  .height(25)
-                  .width(104)
-                  .border({ color: 'white', width: 1 })
-
-              }
-            }.height('100%').width('100%').align(Alignment.Start) // 左对齐
-          }
-
-          GridCol({ span: 2 }) {
-            Stack() {
-              Image($r('app.media.setting_icon'))
-                .width(20)
-                .height(20)
-                .offset({y:16,x:20})  // 偏移
-            }.height('100%')
-            .align(Alignment.Top)  // 顶部对齐
-          }
-        }
-      }.backgroundColor('#ff1a8af3').height(146).width('100%').padding({ left: 20, right: 20 })
-
-
-
-      // 入口组
-      Column() {
-        NormalEntry({ head_icon: $r('app.media.star'), title: '血液检测记录' })
-        NormalEntry({ head_icon: $r('app.media.star'), title: '血液检测记录' })
-        NormalEntry({ head_icon: $r('app.media.star'), title: '血液检测记录' })
-        NormalEntry({ head_icon: $r('app.media.star'), title: '血液检测记录' })
-        NormalEntry({ head_icon: $r('app.media.star'), title: '血液检测记录' })
-        NormalEntry({ head_icon: $r('app.media.star'), title: '血液检测记录' })
-        NormalEntry({ head_icon: $r('app.media.star'), title: '血液检测记录' })
-        NormalEntry({ head_icon: $r('app.media.star'), title: '血液检测记录' })
+  // build the tapBar
+  @Builder
+  tabBar(index: number, title: string, offset: string = '') {
+    Column() {
+      Text(title)
+        .fontColor(this.currentIndex === index ? this.selectedFontColor : this.fontColor)
+        .fontSize(12)
+        .fontWeight(this.currentIndex === index ? 600 : 400)
+        .lineHeight(14)
+      if (this.currentIndex === index) {
+        Rect()
+          .width('100%')
+          .height(2)
+          .fill('#333')
+          .radius(1)
+          .margin({ top: 5 })
       }
+    }.width(30)
+    .height(20)
+    .alignSelf(ItemAlign.Start).margin({ left: UI_Config.containerPadding} )
+    .offset({x: offset})
+    .onClick(() => {
+      this.tab_controller.changeIndex(index)
+    })
+  }
+
+
+  build() {
+    Column({ space: 10 }) {
+      BigUserInfo({isOnMePage: true})
+
+      Tabs({barPosition: BarPosition.Start, controller: this.tab_controller}){
+        TabContent() {
+          Column() {
+            NormalEntry({ head_icon: $r('app.media.star'), title: '血液检测记录' })
+            NormalEntry({ head_icon: $r('app.media.star'), title: '血液检测记录' })
+            NormalEntry({ head_icon: $r('app.media.star'), title: '血液检测记录' })
+            NormalEntry({ head_icon: $r('app.media.star'), title: '血液检测记录' })
+            NormalEntry({ head_icon: $r('app.media.star'), title: '血液检测记录' })
+          }
+        }.tabBar(this.tabBar(0,'记录')).align(Alignment.Top)
+        TabContent() {
+          Column() {
+
+            Divider()
+            Row() {
+              Scroll() {
+                Column() {
+                  ForEach([1, 2, 3, 4, 5, 6, 7], () => {
+                    PostCard()
+                  })
+                }
+              }
+            }
+          }
+        }.tabBar(this.tabBar(1,'动态','-70%')).align(Alignment.Top)
+      }
+      .onChange((index: number) => {
+        this.currentIndex = index
+      })
+      .barHeight(40)
+
+
+
 
     }.height('100%').width('100%')
   }

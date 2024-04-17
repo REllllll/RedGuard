@@ -1,9 +1,12 @@
 import { PostCard } from './components/Cards'
-import { User } from '../models/auth'
+import router from '@ohos.router'
 
 
 @Component
 struct Found {
+  @State bg_color: string = '#ffffffff'
+
+
   build() {
     // 顶部导航
     Tabs({ barPosition: BarPosition.Start }) {
@@ -12,7 +15,8 @@ struct Found {
         Scroll() {
           // 创建七个PostCard
           Column(){
-            ForEach([1, 2, 3, 4, 5, 6, 7], (i) => {
+            PostCard({title:'这是一个标题'})
+            ForEach([1, 2, 3, 4, 5, 6, 7], () => {
               PostCard()
             })
           }

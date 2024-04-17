@@ -1,32 +1,50 @@
-
+import router from '@ohos.router'
 import { User } from '../../models/auth'
+import { UI_Config } from '../config'
+import { smallCapsule } from './utilites'
 
 // Create a test User
-let user = new User('Bob', 'male', $r('app.media.love'), '杭州市', 24)
+let user = new User('Bob', 'male', $r('app.media.avatar'), '深圳市', 24)
 
 @Extend(Text) function smallNumber() {
   .fontSize(10)
+}
+
+@Styles function fancy_hover() {
+  .onTouch(
+    (event) => {
+      if (event.type === TouchType.Down) {
+        console.info('down')
+        this.bg_color = this.hover_color
+      } else if (event.type === TouchType.Up) {
+        console.info('up')
+        this.bg_color = this.normal_color
+      }
+    }
+  )
 }
 
 @Preview
 @Component
 struct NormalUserInfo {
   @State user: User = user
+  @State bg_color: string = '#FFFFFF'
+  @State hover_color: string = '#F0F0F0'
+  @State normal_color: string = '#FFFFFF'
 
 
   // default gender background color
   private female_bg_color: string = '#FFC0CB'
   private male_bg_color: string = '#87CEFA'
 
-
   build() {
-    Row() {
+    Row({ space: 5 }) {
       // User avatar
       Image(this.user.getAvatar())
         .height(40)
         .width(40)
         .clip(new Circle({ width: 40, height: 40 }))
-        .margin(5)
+
 
       Column() {
 
@@ -35,26 +53,133 @@ struct NormalUserInfo {
           Text(this.user.getName())
             .fontSize(16)
             .fontWeight('bold')
+            .baselineOffset(-2)
           if (this.user.getSex() === 'male') {
-            Stack() {
-              Text('♂' + String(this.user.getAge()))
-                .smallNumber()
-            }.backgroundColor(this.male_bg_color).borderRadius(5).padding(2)
+            smallCapsule({ text: '♂' + String(this.user.getAge()), bg_color: this.male_bg_color })
           } else {
-            Stack() {
-              Text('♀' + String(this.user.getAge()))
-                .smallNumber()
-            }.backgroundColor(this.female_bg_color).borderRadius(5).padding(2)
+            smallCapsule({ text: '♀' + String(this.user.getAge()), bg_color: this.female_bg_color })
           }
-        }
+        }.alignItems(VerticalAlign.Center)
 
         // User location
         Text(this.user.getLocation())
           .fontSize(12)
           .fontColor('#808080')
       }
-    }
+    }.fancy_hover().borderRadius(10).backgroundColor(this.bg_color).padding(5)
+    .onClick(() => {
+      console.info('click')
+      router.pushUrl({
+        url: 'pages/UserDetailPage',
+        // params: {
+        //   user: this.user
+        // }
+      })
+    }).offset({x:-5})
   }
 }
 
-export { NormalUserInfo}
+@Preview
+@Component
+struct BigUserInfo {
+  // 是否是我的页面
+  @State isOnMePage: boolean = true
+
+  private padding_val: number = UI_Config.containerPadding
+  build() {
+    Column({ space: 10 }) {
+      // 头部
+      GridRow() {
+        GridCol({ span: 3 }) {
+          Flex() {
+            Stack() {
+              Shape() {
+                Circle({ width: 57, height: 57 })
+                  .fill('white')
+              }
+
+              Shape() {
+                Circle({ width: 54, height: 54 })
+                  .fill('#ffa0a0a0')
+              }
+
+              Image($r('app.media.avatar'))
+                .width(54)
+                .height(54)
+                .clip(new Circle({ width: 54, height: 54 }))
+            }.alignSelf(ItemAlign.End)
+          }.height('100%')
+        }
+
+        // 用户名
+        GridCol({ span: 7 }) {
+          Flex() {
+            Stack() {
+              Text('Sytles')
+                .fontSize(20)
+                .fontColor('white')
+                .fontWeight('bold')
+            }.width('100%').align(Alignment.Start).height(57).alignSelf(ItemAlign.End)
+          }.height('100%')
+        }
+
+        // 设置按钮
+        if(this.isOnMePage){
+          GridCol({ span: 2 }) {
+            Stack() {
+              Image($r('app.media.setting_icon'))
+                .width(20)
+                .height(20)
+                .offset({ y: 16, x: 20 }) // 偏移
+            }.height('100%')
+            .align(Alignment.Top) // 顶部对齐
+          }
+        } else {
+          // 关注按钮
+          GridCol({ span: 2 }) {
+            Flex(){
+              Stack() {
+                Button('关注')
+                  .width(60)
+                  .height(30)
+                  .borderRadius(15)
+                  .fontColor('white')
+                  .backgroundColor('#ff91c8ff')
+              }.height(57)
+              .align(Alignment.Start).alignSelf(ItemAlign.End)
+            }.height('100%')
+          }
+        }
+      }.height(90)
+      // 详细信息
+      Row({ space: 10 }) {
+        smallCapsule({ head_icon: $r('app.media.sex_icon'), bg_color: '#ff003dd7' })
+        smallCapsule({ text: '20岁' })
+        smallCapsule({ text: '深圳' })
+      }.width('100%')
+      // 粉丝数&关注数
+      Row({ space: 10 }) {
+        // 粉丝数
+        Column() {
+          Text('粉丝')
+            .fontSize(12)
+            .fontColor('#ffffffff')
+          Text('100')
+            .fontSize(15)
+            .fontWeight('bold')
+        }
+        // 关注数
+        Column() {
+          Text('关注')
+            .fontSize(12)
+            .fontColor('#ffffffff')
+          Text('100')
+            .fontSize(15)
+            .fontWeight('bold')
+        }.alignItems(HorizontalAlign.Center)
+      }.width('100%')
+    }.backgroundColor('#ff1a8af3').height(160).width('100%').padding({ left: this.padding_val, right: this.padding_val })
+  }
+}
+
+export { NormalUserInfo, BigUserInfo }

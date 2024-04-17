@@ -1,8 +1,26 @@
+@Styles function fancy_hover() {
+  .onTouch(
+    (event) => {
+      if (event.type === TouchType.Down && this.untouchable === false) {
+        console.info('down')
+        this.bg_color = this.hover_color
+      } else if (event.type === TouchType.Up) {
+        console.info('up')
+        this.bg_color = this.normal_color
+      }
+    }
+  )
+}
+
 @Preview
 @Component
 struct NormalEntry {
   @State head_icon: Resource = $r('app.media.star')
   @State title: string = "Title"
+  @State normal_color: string = 'white'
+  @State hover_color: string = '#f0f0f0'
+  @State bg_color: string = 'white'
+  @State untouchable: boolean = false
 
   build() {
     Column() {
@@ -41,14 +59,13 @@ struct NormalEntry {
         }
       }.height(48)
       .width('100%')
-      .backgroundColor('white')
 
       Divider()
         .height(1)
         .width('100%')
         .backgroundColor('rgba(247, 247, 247, 0.15)')
         .opacity(0.5)
-    }
+    }.backgroundColor(this.bg_color).fancy_hover()
   }
 }
 
