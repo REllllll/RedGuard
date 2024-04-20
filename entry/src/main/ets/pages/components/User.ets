@@ -4,7 +4,7 @@ import { UI_Config } from '../config'
 import { smallCapsule } from './utilites'
 
 // Create a test User
-let user = new User('Bob', 'male', $r('app.media.avatar'), '深圳市', 24)
+let user = new User('Sytles', 'male', $r('app.media.avatar'), '深圳市', 24)
 
 @Extend(Text) function smallNumber() {
   .fontSize(10)
@@ -62,20 +62,27 @@ struct NormalUserInfo {
         }.alignItems(VerticalAlign.Center)
 
         // User location
-        Text(this.user.getLocation())
-          .fontSize(12)
-          .fontColor('#808080')
-      }
-    }.fancy_hover().borderRadius(10).backgroundColor(this.bg_color).padding(5)
+        Row() {
+          Text(this.user.getLocation())
+            .fontSize(12)
+            .fontColor('#808080')
+        }.margin({ top: 2, bottom: 2 })
+      }.alignItems(HorizontalAlign.Start)
+    }
+    .fancy_hover()
+    .borderRadius(10)
+    .backgroundColor(this.bg_color)
+    .padding(5)
     .onClick(() => {
       console.info('click')
       router.pushUrl({
-        url: 'pages/UserDetailPage',
+        url: 'pages/UserDetail',
         // params: {
         //   user: this.user
         // }
       })
-    }).offset({x:-5})
+    })
+    .offset({ x: -5 })
   }
 }
 
@@ -84,60 +91,75 @@ struct NormalUserInfo {
 struct BigUserInfo {
   // 是否是我的页面
   @State isOnMePage: boolean = true
-
   private padding_val: number = UI_Config.containerPadding
+
   build() {
     Column({ space: 10 }) {
       // 头部
       GridRow() {
-        GridCol({ span: 3 }) {
-          Flex() {
-            Stack() {
-              Shape() {
-                Circle({ width: 57, height: 57 })
-                  .fill('white')
-              }
+        GridCol({ span: 10 }) {
 
-              Shape() {
-                Circle({ width: 54, height: 54 })
-                  .fill('#ffa0a0a0')
-              }
+          Row(){
+            Row({ space: 10 }) {
+              Row() {
+                Stack() {
+                  Shape() {
+                    Circle({ width: 57, height: 57 })
+                      .fill('white')
+                  }
 
-              Image($r('app.media.avatar'))
-                .width(54)
-                .height(54)
-                .clip(new Circle({ width: 54, height: 54 }))
-            }.alignSelf(ItemAlign.End)
-          }.height('100%')
-        }
+                  Shape() {
+                    Circle({ width: 54, height: 54 })
+                      .fill('#ffa0a0a0')
+                  }
 
-        // 用户名
-        GridCol({ span: 7 }) {
-          Flex() {
-            Stack() {
-              Text('Sytles')
-                .fontSize(20)
-                .fontColor('white')
-                .fontWeight('bold')
-            }.width('100%').align(Alignment.Start).height(57).alignSelf(ItemAlign.End)
-          }.height('100%')
+                  Image($r('app.media.avatar'))
+                    .width(54)
+                    .height(54)
+                    .clip(new Circle({ width: 54, height: 54 }))
+                }.alignSelf(ItemAlign.End)
+              }.height('100%')
+
+              // 用户名
+              Row() {
+                Stack() {
+                  Text('Sytles')
+                    .fontSize(20)
+                    .fontColor('white')
+                    .fontWeight('bold')
+                }.align(Alignment.Start).height(57).alignSelf(ItemAlign.End)
+              }.height('100%')
+            }.onClick(() => {
+              console.info('click')
+              router.pushUrl({
+                url: 'pages/settings/SelfInfoSetting'
+              })
+            })
+          }.width('100%')
+
         }
 
         // 设置按钮
-        if(this.isOnMePage){
+        if (this.isOnMePage) {
           GridCol({ span: 2 }) {
             Stack() {
               Image($r('app.media.setting_icon'))
                 .width(20)
                 .height(20)
                 .offset({ y: 16, x: 20 }) // 偏移
+                .onClick(() => {
+                  console.info('setting')
+                  router.pushUrl({
+                    url: 'pages/settings/MainSetting'
+                  })
+                })
             }.height('100%')
             .align(Alignment.Top) // 顶部对齐
           }
         } else {
           // 关注按钮
           GridCol({ span: 2 }) {
-            Flex(){
+            Flex() {
               Stack() {
                 Button('关注')
                   .width(60)
@@ -177,8 +199,8 @@ struct BigUserInfo {
             .fontSize(15)
             .fontWeight('bold')
         }.alignItems(HorizontalAlign.Center)
-      }.width('100%')
-    }.backgroundColor('#ff1a8af3').height(160).width('100%').padding({ left: this.padding_val, right: this.padding_val })
+      }.width('100%').margin({ bottom: 10 })
+    }.backgroundColor('#ff1a8af3').width('100%').padding({ left: this.padding_val, right: this.padding_val })
   }
 }
 

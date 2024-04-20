@@ -89,179 +89,183 @@ struct HomePage {
 
   build() {
     // 整个页面为从上到下的多行，故采用列组件
-    Column({space: 10}) {
+    Column({ space: 10 }) {
 
       // 搜索栏
-      Search({ value: this.inputValue, placeholder: '在此进行搜索...', controller: this.controller })
-        .searchButton('搜索')
-        .width('100%')
-        .height(40)
-        .backgroundColor('#F5F5F5')
-        .placeholderColor(Color.Grey)
-        .placeholderFont({ size: 14, weight: 400 })
-        .textFont({ size: 14, weight: 400 })
-          // 当搜索被按下时执行
-        .onSubmit((value: string) => {
-          this.getValue = value
+      Row() {
+        Search({ value: this.inputValue, placeholder: '在此进行搜索...', controller: this.controller })
+          .searchButton('搜索')
+          .width('100%')
+          .height(px2vp(vp2px(UI_Config.navBarHeight)-48)-5)
+          .backgroundColor('#F5F5F5')
+          .placeholderColor(Color.Grey)
+          .placeholderFont({ size: 14, weight: 400 })
+          .textFont({ size: 14, weight: 400 })
+            // 当搜索被按下时执行
+          .onSubmit((value: string) => {
+            this.getValue = value
+          })
+      }.backgroundColor(UI_Config.PrimaryColor).padding({ left: UI_Config.containerPadding, right: UI_Config.containerPadding })
+
+      // 内容
+      Column({space:5}) { // 轮播图
+        Swiper(this.swiperController) {
+          LazyForEach(this.data, (item: string) => {
+            Text(item)
+              .width('100%')
+              .height(160)
+              .backgroundColor(0xAFEEEE)
+              .textAlign(TextAlign.Center)
+              .fontSize(30)
+          }, item => item)
+        }
+        .cachedCount(2)
+        .index(1)
+        .autoPlay(true)
+        .interval(4000)
+        .indicator(true)
+        .loop(true)
+        .duration(1000)
+        .itemSpace(0)
+        .curve(Curve.Linear)
+        .onChange((index: number) => {
+          console.info(index.toString())
         })
 
-      // 轮播图
-      Swiper(this.swiperController) {
-        LazyForEach(this.data, (item: string) => {
-          Text(item)
-            .width('100%')
-            .height(160)
-            .backgroundColor(0xAFEEEE)
-            .textAlign(TextAlign.Center)
-            .fontSize(30)
-        }, item => item)
-      }
-      .cachedCount(2)
-      .index(1)
-      .autoPlay(true)
-      .interval(4000)
-      .indicator(true)
-      .loop(true)
-      .duration(1000)
-      .itemSpace(0)
-      .curve(Curve.Linear)
-      .onChange((index: number) => {
-        console.info(index.toString())
-      })
-
-      // 分栏
-      Flex() {
-        ForEach(this.titles, (title: string, index: number) => {
-          Stack() {
-            NormalButton({ title: title, pic: this.pics[index] })
-          }.flexGrow(1)
-        }, (title: string) => title)
-      }
-
-      // 数据展示1
-      Column() {
+        // 分栏
         Flex() {
-          Card({ normal_color: "#4095E5",hover_color: "#ff1f70bc", flexRatio: 1, cardHeight: this.yCardHeight }) {
-            Column({ space: 7 }) {
-              Row({ space: 10 }) {
-                Text('今日血压')
-                  .smallTitle()
-                  .fontColor(Color.White)
-                Image($r('app.media.neural'))
-                  .smallIcon()
-              }.alignSelf(ItemAlign.Start)
+          ForEach(this.titles, (title: string, index: number) => {
+            Stack() {
+              NormalButton({ title: title, pic: this.pics[index] })
+            }.flexGrow(1)
+          }, (title: string) => title)
+        }
 
-              ForEach(Object.keys(this.bloodPressure_info), (key: string, index: number) => {
-                // 如果key为收缩压或舒张压
-                if (key === '收缩压' || key === '舒张压') {
-                  Text(key + ': ' + this.bloodPressure_info[key])
-                    .fontColor("#333333")
-                    .normalBoldText()
-                }
-                // 如果key为状态
-                if (key === '状态') {
-                  // 如果状态为正常
-                  if (this.bloodPressure_info[key] === '正常') {
+        // 数据展示1
+        Column() {
+          Flex() {
+            Card({ normal_color: "#4095E5", hover_color: "#ff1f70bc", flexRatio: 1, cardHeight: this.yCardHeight }) {
+              Column({ space: 7 }) {
+                Row({ space: 10 }) {
+                  Text('今日血压')
+                    .smallTitle()
+                    .fontColor(Color.White)
+                  Image($r('app.media.neural'))
+                    .smallIcon()
+                }.alignSelf(ItemAlign.Start)
+
+                ForEach(Object.keys(this.bloodPressure_info), (key: string, index: number) => {
+                  // 如果key为收缩压或舒张压
+                  if (key === '收缩压' || key === '舒张压') {
                     Text(key + ': ' + this.bloodPressure_info[key])
-                      .fontColor("#ff64ff79")
-                      .normalBoldText()
-                  } else {
-                    Text(key + ': ' + this.bloodPressure_info[key])
-                      .fontColor("#FF0000")
+                      .fontColor("#333333")
                       .normalBoldText()
                   }
-                }
+                  // 如果key为状态
+                  if (key === '状态') {
+                    // 如果状态为正常
+                    if (this.bloodPressure_info[key] === '正常') {
+                      Text(key + ': ' + this.bloodPressure_info[key])
+                        .fontColor("#ff64ff79")
+                        .normalBoldText()
+                    } else {
+                      Text(key + ': ' + this.bloodPressure_info[key])
+                        .fontColor("#FF0000")
+                        .normalBoldText()
+                    }
+                  }
 
-              }, (key: string) => key)
-              Text('本周平均:')
-                .fontColor(Color.White)
-                .smallTitle()
-              Text('118/78 mmHg')
-                .fontColor("#333333")
-                .normalBoldText()
-            }.flexGrow(1).alignSelf(ItemAlign.Center)
-          }
-
-          Card({ normal_color: "#377f7f",hover_color: "#ff276060", flexRatio: 1, cardHeight: this.yCardHeight }) {
-            Column({ space: 7 }) {
-              Row({ space: 10 }) {
-                Text('心率')
-                  .smallTitle()
+                }, (key: string) => key)
+                Text('本周平均:')
                   .fontColor(Color.White)
-                Image($r('app.media.love'))
-                  .smallIcon()
-              }.alignSelf(ItemAlign.Start)
-
-              Text('每分钟跳动次数：')
-                .fontColor("#333333")
-                .normalBoldText()
-              Text('78 bpm')
-                .fontColor("#333333")
-                .normalBoldText()
-              Text('状态:正常')
-                .fontColor("#ff64ff79")
-                .normalBoldText()
-              Text('本周平均:')
-                .fontColor(Color.White)
-                .smallTitle()
-              Text('78 bpm')
-                .fontColor("#333333")
-                .normalBoldText()
-            }.flexGrow(1).alignSelf(ItemAlign.Center)
-          }
-
-        }
-
-        // 数据展示2
-        Column() {
-          Card({ normal_color: "#54BCBD",hover_color: "#ff378c8d", cardHeight: this.xCardHeight }) {
-            Flex() {
-              Column({ space: 5 }) {
-                Text('BMI指数')
                   .smallTitle()
-                  .fontColor(Color.White)
-                Text('19.1')
+                Text('118/78 mmHg')
+                  .fontColor("#333333")
                   .normalBoldText()
-                  .fontColor('#333333')
-              }.flexGrow(1)
-
-              Column({ space: 5 }) {
-                Text('今日体重')
-                  .smallTitle()
-                  .fontColor(Color.White)
-                Text('62.7kg')
-                  .normalBoldText()
-                  .fontColor('#333333')
-              }.flexGrow(1)
-            }
-          }
-
-          // 下2
-          Card({ normal_color: "#F9A825",hover_color: "#ffc1851b", cardHeight: this.xCardHeight}) {
-            Flex() {
-              Column({ space: 5 }) {
-                Text('今日血糖')
-                  .smallTitle()
-                  .fontColor(Color.White)
-                Text('空腹: 6.26mmol/L')
-                  .normalBoldText()
-                  .fontColor('#333333')
-                Text('餐后: 7.2mmol/L')
-                  .normalBoldText()
-                  .fontColor('#333333')
-              }.flexGrow(1)
-
-              Column({ space: 5 }) {
-                Text('状态:偏高')
-                  .normalBoldText()
-                  .fontColor(Color.Red)
               }.flexGrow(1).alignSelf(ItemAlign.Center)
             }
+
+            Card({ normal_color: "#377f7f", hover_color: "#ff276060", flexRatio: 1, cardHeight: this.yCardHeight }) {
+              Column({ space: 7 }) {
+                Row({ space: 10 }) {
+                  Text('心率')
+                    .smallTitle()
+                    .fontColor(Color.White)
+                  Image($r('app.media.love'))
+                    .smallIcon()
+                }.alignSelf(ItemAlign.Start)
+
+                Text('每分钟跳动次数：')
+                  .fontColor("#333333")
+                  .normalBoldText()
+                Text('78 bpm')
+                  .fontColor("#333333")
+                  .normalBoldText()
+                Text('状态:正常')
+                  .fontColor("#ff64ff79")
+                  .normalBoldText()
+                Text('本周平均:')
+                  .fontColor(Color.White)
+                  .smallTitle()
+                Text('78 bpm')
+                  .fontColor("#333333")
+                  .normalBoldText()
+              }.flexGrow(1).alignSelf(ItemAlign.Center)
+            }
+
           }
 
+          // 数据展示2
+          Column() {
+            Card({ normal_color: "#54BCBD", hover_color: "#ff378c8d", cardHeight: this.xCardHeight }) {
+              Flex() {
+                Column({ space: 5 }) {
+                  Text('BMI指数')
+                    .smallTitle()
+                    .fontColor(Color.White)
+                  Text('19.1')
+                    .normalBoldText()
+                    .fontColor('#333333')
+                }.flexGrow(1)
+
+                Column({ space: 5 }) {
+                  Text('今日体重')
+                    .smallTitle()
+                    .fontColor(Color.White)
+                  Text('62.7kg')
+                    .normalBoldText()
+                    .fontColor('#333333')
+                }.flexGrow(1)
+              }
+            }
+
+            // 下2
+            Card({ normal_color: "#F9A825", hover_color: "#ffc1851b", cardHeight: this.xCardHeight }) {
+              Flex() {
+                Column({ space: 5 }) {
+                  Text('今日血糖')
+                    .smallTitle()
+                    .fontColor(Color.White)
+                  Text('空腹: 6.26mmol/L')
+                    .normalBoldText()
+                    .fontColor('#333333')
+                  Text('餐后: 7.2mmol/L')
+                    .normalBoldText()
+                    .fontColor('#333333')
+                }.flexGrow(1)
+
+                Column({ space: 5 }) {
+                  Text('状态:偏高')
+                    .normalBoldText()
+                    .fontColor(Color.Red)
+                }.flexGrow(1).alignSelf(ItemAlign.Center)
+              }
+            }
+
+          }
         }
-      }
-    }.padding({ left: UI_Config.containerPadding, right: UI_Config.containerPadding }).height('100%')
+      }.padding({ left: UI_Config.containerPadding, right: UI_Config.containerPadding })
+    }.height('100%')
   }
 }
 

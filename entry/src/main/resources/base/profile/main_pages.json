@@ -4,6 +4,13 @@
     "pages/login",
     "pages/register",
     "pages/PostDetail",
-    "pages/UserDetailPage"
+    "pages/UserDetail",
+    "pages/settings/MainSetting",
+    "pages/settings/NotificationSetting",
+    "pages/PostEdit",
+    "pages/settings/SelfInfoSetting",
+    "pages/settings/AccountSetting",
+    "pages/settings/NameSetting",
+    "pages/settings/PassWordSetting"
   ]
 }

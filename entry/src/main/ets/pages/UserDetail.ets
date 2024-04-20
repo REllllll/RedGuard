@@ -16,7 +16,7 @@ struct UserDetailPage {
     Row() {
       Column() {
         Row() {
-          SubPageNav({title: '用户信息', clicked: $clicked})
+          SubPageNav({title: '', clicked: $clicked, bgColor: UI_Config.PrimaryColor, fontColor: '#fff'})
         }
         Row() {
           BigUserInfo({isOnMePage: false})

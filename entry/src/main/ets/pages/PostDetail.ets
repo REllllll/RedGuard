@@ -19,7 +19,7 @@ struct PostDetail {
   build() {
     Flex({ direction: FlexDirection.Column }) {
       // nav
-      SubPageNav({ title: '帖子详情', clicked: $clicked })
+      SubPageNav({ title: '帖子详情', clicked: $clicked, bgColor:UI_Config.PrimaryColor, fontColor: '#fff' })
       // body
       Scroll() {
         Column() {

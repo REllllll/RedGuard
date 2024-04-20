@@ -10,7 +10,7 @@ import window from '@ohos.window'
 struct SearchExample {
   @State currentIndex: number = 0
   @State fontColor: string = '#666666'
-  @State selectedFontColor: string = UI_Config.normalBlue
+  @State selectedFontColor: string = UI_Config.PrimaryColor
   @State display_width: number = display.getDefaultDisplaySync().width
 
   // TabBar Builder

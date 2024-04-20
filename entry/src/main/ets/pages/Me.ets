@@ -1,9 +1,8 @@
 import { PostCard } from './components/Cards'
-import { NormalEntry } from './components/NormalEntry'
+import { NormalSection } from './components/Sections'
 import { BigUserInfo } from './components/User'
 import { smallCapsule } from './components/utilites'
 import { UI_Config } from './config'
-
 
 
 @Preview
@@ -31,55 +30,52 @@ struct Me {
           .radius(1)
           .margin({ top: 5 })
       }
-    }.width(30)
+    }
+    .width(30)
     .height(20)
-    .alignSelf(ItemAlign.Start).margin({ left: UI_Config.containerPadding} )
-    .offset({x: offset})
+    .alignSelf(ItemAlign.Start)
+    .margin({ left: UI_Config.containerPadding })
+    .offset({ x: offset })
+    // change the tab when clicked
     .onClick(() => {
       this.tab_controller.changeIndex(index)
     })
   }
 
-
   build() {
-    Column({ space: 10 }) {
-      BigUserInfo({isOnMePage: true})
+    Column() {
+      BigUserInfo({ isOnMePage: true })
 
-      Tabs({barPosition: BarPosition.Start, controller: this.tab_controller}){
+      Tabs({ barPosition: BarPosition.Start, controller: this.tab_controller }) {
         TabContent() {
           Column() {
-            NormalEntry({ head_icon: $r('app.media.star'), title: '血液检测记录' })
-            NormalEntry({ head_icon: $r('app.media.star'), title: '血液检测记录' })
-            NormalEntry({ head_icon: $r('app.media.star'), title: '血液检测记录' })
-            NormalEntry({ head_icon: $r('app.media.star'), title: '血液检测记录' })
-            NormalEntry({ head_icon: $r('app.media.star'), title: '血液检测记录' })
+            NormalSection({ head_icon: $r('app.media.star'), title: '血液检测记录' })
+            NormalSection({ head_icon: $r('app.media.star'), title: '血压记录' })
+            NormalSection({ head_icon: $r('app.media.star'), title: '心率记录' })
+            NormalSection({ head_icon: $r('app.media.star'), title: '体重记录' })
+            NormalSection({ head_icon: $r('app.media.star'), title: '血糖记录' })
           }
-        }.tabBar(this.tabBar(0,'记录')).align(Alignment.Top)
+        }.tabBar(this.tabBar(0, '记录')).align(Alignment.Top)
+
         TabContent() {
           Column() {
-
             Divider()
-            Row() {
-              Scroll() {
-                Column() {
-                  ForEach([1, 2, 3, 4, 5, 6, 7], () => {
-                    PostCard()
-                  })
-                }
+            Scroll() {
+              Column() {
+                ForEach([1, 2, 3, 4, 5, 6, 7], () => {
+                  PostCard()
+                })
               }
             }
           }
-        }.tabBar(this.tabBar(1,'动态','-70%')).align(Alignment.Top)
+        }.tabBar(this.tabBar(1, '动态', '-70%')).align(Alignment.Top)
       }
       .onChange((index: number) => {
         this.currentIndex = index
       })
       .barHeight(40)
-
-
-
-
-    }.height('100%').width('100%')
+      .layoutWeight(1) // make the tab content fill the rest space
+    }.width('100%').height('100%')
   }
 }
 

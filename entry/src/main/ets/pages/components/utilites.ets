@@ -1,3 +1,4 @@
+import { UI_Config } from '../config'
 @Styles function fancy_hover() {
   .onTouch(
     (event) => {
@@ -32,6 +33,8 @@ struct Tag {
 @Component
 struct SubPageNav {
   private title: string
+  private bgColor: string
+  private fontColor: string
   @Link clicked: Boolean
 
   build() {
@@ -42,17 +45,16 @@ struct SubPageNav {
             .onClick(() => {
               this.clicked = true
             })
-            .fontColor('#ff000000')
-            .backgroundColor('#fff')
+            .fontColor(this.fontColor)
+            .backgroundColor(this.bgColor)
         }.alignItems(HorizontalAlign.Start).width('100%')
 
         Text(this.title)
           .fontSize(20)
           .fontWeight(600)
-          .fontColor('#333')
+          .fontColor(this.fontColor)
       }.width('100%').flexGrow(1)
-      Divider().width('100%').height(1).color('#f0f0f0')
-    }.height(60).width('100%').backgroundColor('#fff')
+    }.height(UI_Config.navBarHeight).width('100%').backgroundColor(this.bgColor)
   }
 }
 
