@@ -91,6 +91,7 @@ struct NormalUserInfo {
 struct BigUserInfo {
   // 是否是我的页面
   @State isOnMePage: boolean = true
+  @State follow: boolean = false
   private padding_val: number = UI_Config.containerPadding
 
   build() {
@@ -161,12 +162,16 @@ struct BigUserInfo {
           GridCol({ span: 2 }) {
             Flex() {
               Stack() {
-                Button('关注')
-                  .width(60)
+                Button(this.follow === true? '已关注': '关注')
+                  .width(70)
                   .height(30)
                   .borderRadius(15)
                   .fontColor('white')
-                  .backgroundColor('#ff91c8ff')
+                  .backgroundColor(this.follow === true? '#ff2058ff': '#ffabd4ff')
+                  .offset({x:-20})
+                  .onClick(() => {
+                    this.follow = !this.follow
+                  })
               }.height(57)
               .align(Alignment.Start).alignSelf(ItemAlign.End)
             }.height('100%')

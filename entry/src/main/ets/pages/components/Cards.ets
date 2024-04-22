@@ -46,6 +46,8 @@ struct Card {
   @State flexRatio: number = undefined
   @State bg_color: string = '#ffffffff'
   @State untouchable: boolean = false
+  private border_width: number = 0
+  private border_color: string = 'black'
 
   // init the card color
   aboutToAppear() {
@@ -57,6 +59,8 @@ struct Card {
       this.children()
     }
     .borderRadius(10)
+    .borderWidth(this.border_width)
+    .borderColor(this.border_color)
     .padding(10)
     .fancy_hover()
     .backgroundColor(this.bg_color)
@@ -212,4 +216,71 @@ struct CommentCard {
 }
 
 
-export { Card, PostCard, PostCardInter, CommentCard }
+@Component
+struct PostEditCard {
+  @Link title: string
+  @Link text_content: string
+  @Link image_content_uris: string[]
+
+  @Builder
+  roundedImage(image_uri: string = '') {
+    Stack() {
+      if(image_uri === ''){
+        Image($r('app.media.fillBlank'))
+          .width(50)
+          .height(50)
+          .borderRadius(10)
+          .margin(10)
+      }
+      else
+      {
+        Image(image_uri)
+          .width(60)
+          .height(60)
+          .borderRadius(10)
+      }
+    }.borderRadius(10).borderWidth(1)
+  }
+
+  build() {
+    Column() {
+      Card({normal_color: '#f0f0f0', hover_color: '#f0f0f0'}) {
+        Column({ space: 10 }) {
+          Row() {
+            TextInput({ placeholder: 'Title', text: this.title })
+              .width('100%')
+              .height(50)
+              .padding(10)
+              .fontSize(30)
+              .fontWeight('bold')
+              .onChange((value: string) => {
+                this.title = value
+              })
+              .borderRadius(10)
+              .backgroundColor('#f0f0f0')
+          }
+          Row() {
+            TextInput({ placeholder: 'Content', text: this.text_content })
+              .width('100%')
+              .padding(10)
+              .fontSize(16)
+              .onChange((value: string) => {
+                this.text_content = value
+              })
+              .textAlign(TextAlign.Start)
+              .borderRadius(10)
+              .backgroundColor('#f0f0f0')
+          }
+          Row() {
+            ForEach(this.image_content_uris, (image_uri:  string) => {
+              this.roundedImage(image_uri)
+            })
+          }.alignSelf(ItemAlign.Start).position({y:225})
+        }.height(300)
+      }
+    }
+  }
+}
+
+
+export { Card, PostCard, PostCardInter, CommentCard, PostEditCard }

@@ -1,4 +1,5 @@
 import { UI_Config } from '../config'
+
 @Styles function fancy_hover() {
   .onTouch(
     (event) => {
@@ -31,6 +32,20 @@ struct Tag {
 
 
 @Component
+struct NavContainer {
+  @BuilderParam children: () => void
+  private bgColor: string
+
+  build() {
+    Flex({ direction: FlexDirection.Column }) {
+      Stack() {
+        this.children()
+      }.width('100%').flexGrow(1)
+    }.height(UI_Config.navBarHeight).width('100%').backgroundColor(this.bgColor)
+  }
+}
+
+@Component
 struct SubPageNav {
   private title: string
   private bgColor: string
@@ -38,25 +53,68 @@ struct SubPageNav {
   @Link clicked: Boolean
 
   build() {
-    Flex({direction:FlexDirection.Column}){
-      Stack() {
-        Column() {
-          Button('<')
-            .onClick(() => {
-              this.clicked = true
-            })
-            .fontColor(this.fontColor)
-            .backgroundColor(this.bgColor)
-        }.alignItems(HorizontalAlign.Start).width('100%')
-
-        Text(this.title)
-          .fontSize(20)
-          .fontWeight(600)
+    NavContainer({bgColor: this.bgColor}) {
+      Column() {
+        Button('<')
+          .onClick(() => {
+            this.clicked = true
+          })
           .fontColor(this.fontColor)
-      }.width('100%').flexGrow(1)
-    }.height(UI_Config.navBarHeight).width('100%').backgroundColor(this.bgColor)
+          .backgroundColor(this.bgColor)
+      }.alignItems(HorizontalAlign.Start).width('100%')
+
+      Text(this.title)
+        .fontSize(20)
+        .fontWeight(600)
+        .fontColor(this.fontColor)
+    }
   }
 }
+
+
+@Component
+struct PageNavWithMenu {
+  private bgColor: string
+  private fontColor: string
+  private menuItems: string[]
+  private menuTitles: string[]
+  @Link selected: number
+  @Link clicked: Boolean
+
+  @Builder
+  TabMenu() {
+    Menu() {
+      ForEach(this.menuItems, (item, index) => {
+        MenuItem({content: item})
+          .onChange(() => {
+            this.selected = index
+          })
+          .enabled(index !== this.selected)
+      })
+    }
+  }
+
+  build() {
+    NavContainer({bgColor: this.bgColor}) {
+      Column() {
+        Image($r('app.media.CircleCross'))
+          .width(34)
+          .height(34)
+          .onClick(() => {
+            this.clicked = true
+          })
+      }.alignItems(HorizontalAlign.Start).width('100%').padding({left: 10})
+
+      // Title
+      Text(this.menuTitles[this.selected])
+        .fontSize(20)
+        .fontWeight(600)
+        .fontColor(this.fontColor)
+        .bindMenu(this.TabMenu)
+    }
+  }
+}
+
 
 const unit = 12
 
@@ -101,4 +159,20 @@ struct smallCapsule {
   }
 }
 
-export { Tag, SubPageNav, smallCapsule }
+@Component
+struct NormalButton {
+  private text: string
+
+  build() {
+    Button(this.text)
+      .type(ButtonType.Normal)
+      .fontSize(UI_Config.normalFontSize)
+      .fontWeight(FontWeight.Bold)
+      .height(UI_Config.buttonHeight)
+      .margin({right: UI_Config.containerMargin})
+      .backgroundColor(UI_Config.SuccessColor)
+      .borderRadius(UI_Config.buttonBorderRadius)
+  }
+}
+
+export { Tag, SubPageNav, smallCapsule, PageNavWithMenu, NormalButton }
