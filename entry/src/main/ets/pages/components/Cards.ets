@@ -181,11 +181,11 @@ struct CommentCard {
   build() {
     Column({ space: 5 }) {
       GridRow({ columns: 5 }) {
-        GridCol({ span: 2 }) {
+        GridCol({ span: 3 }) {
           UserInfo({ user: this.user })
         }
         // vote
-        GridCol({ offset: 1, span: 2 }) {
+        GridCol({ offset: 1, span: 1 }) {
 
           Row({ space: 5 }) {
             Image($r('app.media.like'))

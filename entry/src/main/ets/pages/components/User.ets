@@ -209,4 +209,24 @@ struct BigUserInfo {
   }
 }
 
-export { NormalUserInfo, BigUserInfo }
+@Preview
+@Component
+struct MessageUserHead {
+  private user: User = user
+
+  build() {
+    Row({ space: 10 }) {
+      Image(this.user.getAvatar())
+        .width(40)
+        .height(40)
+        .clip(new Circle({ width: 40, height: 40 }))
+      Column() {
+        Text(this.user.getName())
+          .fontSize(16)
+          .fontWeight('bold')
+      }
+    }
+  }
+}
+
+export { NormalUserInfo, BigUserInfo, MessageUserHead }

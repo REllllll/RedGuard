@@ -1,5 +1,10 @@
 import { User } from '../../models/auth'
 import { UI_Config } from '../config'
+import { MessageUserHead } from './User'
+import { NavContainer } from './utilites'
+
+// Create a test User
+let user = new User('Sytles', 'male', $r('app.media.avatar'), '深圳市', 24)
 
 @Styles function fancy_hover() {
   .onTouch(
@@ -223,6 +228,29 @@ struct TextInputSection {
         .padding({ left: UI_Config.containerPadding, right: UI_Config.containerPadding })
       }
     }.alignItems(HorizontalAlign.Start)
+  }
+}
+
+@Preview
+@Component
+struct MessageSection {
+  private user: User = user
+  @State recent_message: string = 'Hello World'
+  @State time: string = '1分钟前'
+  @State unread_count: number = 1
+
+  build() {
+    BaseSectionContainer() {
+      Column() {
+        Row(){
+          MessageUserHead({ user: this.user})
+          Text(this.time)
+            .fontColor(UI_Config.SecondaryColor)
+            .fontSize(UI_Config.smallFontSize)
+            .baselineOffset(-2)
+        }.width('100%')
+      }.padding({ left: UI_Config.containerPadding, right: UI_Config.containerPadding })
+    }
   }
 }
 

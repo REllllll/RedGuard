@@ -175,4 +175,4 @@ struct NormalButton {
   }
 }
 
-export { Tag, SubPageNav, smallCapsule, PageNavWithMenu, NormalButton }
+export { Tag, NavContainer, SubPageNav, smallCapsule, PageNavWithMenu, NormalButton }
